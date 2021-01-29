@@ -27,17 +27,19 @@ public class AuthController {
     private final ResponseService responseService;
 
     @PostMapping(value = "/login")
-    public ApiBaseResult<String> login(HttpServletRequest request, @RequestBody LoginDto loginDto) {
-        log.info(">>>> login >>", loginDto.getLoginId());
-        log.info(">>>> login >>", loginDto.getLoginPwd());
+    public ApiBaseResult<Boolean> login(HttpServletRequest request, @RequestBody LoginDto loginDto) {
+        log.info(">>>> login >>" + loginDto.getLoginId());
+        log.info(">>>> login >>" + loginDto.getLoginPwd());
 
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        Boolean result = authService.login(loginDto);
+
+        return responseService.getApiBaseResult(HttpStatus.OK, result);
     }
     
     @PostMapping(value = "/register")
     public ApiBaseResult<String> register(HttpServletRequest request, @RequestBody RegisterDto registerDto) {
-        log.info(">>>> registerDto >>>> ", registerDto.getLoginId());
-        log.info(">>>> registerDto >>>> ", registerDto.toString());
+        log.info(">>>> registerDto >>>> " + registerDto.getLoginId());
+        log.info(">>>> registerDto >>>> " + registerDto.toString());
 
         Long userId = authService.registerUser(registerDto);
 

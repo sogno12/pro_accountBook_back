@@ -14,8 +14,7 @@ import lombok.Setter;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@Getter
-@Setter
+@Getter @Setter
 public abstract class BaseEntity extends BaseCreatedEntity {
 
     @LastModifiedBy
@@ -23,5 +22,9 @@ public abstract class BaseEntity extends BaseCreatedEntity {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    // 1_1. @MappedSuperClass - 부모 클래스는 테이블과 매핑하지 않고 상속받는 자식 클래스에 매핑 정보만 제공하고 싶을 때 사용한다.
+    // 1_2. @EntitiyListeners(AuditingEntitiyListner.class) - Entity를 DB에 적용하기 이전 또는 이후에
+    // 커스텀 콜백을 요청할 수 있는 annotation.
 
 }

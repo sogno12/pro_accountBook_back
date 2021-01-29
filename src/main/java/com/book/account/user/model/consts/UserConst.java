@@ -10,7 +10,9 @@ public class UserConst {
     
     @Getter
     public enum ResponseError {
-        DUPLICATE_USER_ID(HttpStatus.CONFLICT, "409-1", "중복된 USER_ID");
+        DUPLICATE_USER_ID(HttpStatus.CONFLICT, "409-1", "중복된 USER_ID"),
+        UNAUTHORIZED_NOT_FOUND_ID(HttpStatus.UNAUTHORIZED,"401-1","Unauthorized")
+        ;
 
         HttpStatus status;
         String messageCode;
@@ -25,5 +27,9 @@ public class UserConst {
         public ApiCommonException throwException() {
             return new ApiCommonException(this.status, this.messageCode, this.messageDetail);
         }   
+    }
+
+    public enum AuthType {
+        ADMIN, USER;
     }
 }
