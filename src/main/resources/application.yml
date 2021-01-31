@@ -1,10 +1,12 @@
-
 spring:
     datasource:
         driver-class-name: oracle.jdbc.OracleDriver
-        url: jdbc:oracle:thin:@192.168.0.37:1521:orcl
-        username: student
-        password: 1234
+        # url: jdbc:oracle:thin:@192.168.0.37:1521:orcl
+        # username: student
+        # password: 1234
+        url: jdbc:oracle:thin:@192.168.0.6:1521:xe
+        username: accountbook
+        password: ab1234
 
     jpa:
         open-in-view: false
@@ -23,3 +25,16 @@ server:
 logging:
     level:
         root: INFO
+
+
+
+##
+
+accountbook:
+    app:
+        name: ACCOUNT_BOOK
+        
+    jwt:
+        secretKey: book!@sec
+        tokenValidTime: 1000000
+        tokenType: accbook

@@ -3,6 +3,8 @@ package com.book.account.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class CommonUtils {
     
     public static String encBySha256(String data) {
@@ -32,5 +34,15 @@ public class CommonUtils {
 
         }
         return returnVal;
+    }
+
+    /**
+     * CLIKENT IP 주소
+     */
+    public static String getClientIp(HttpServletRequest req) {
+        String ip = req.getHeader("X-Forwarded-For");
+        if (ip == null)
+            ip = req.getRemoteAddr();
+        return ip;
     }
 }
