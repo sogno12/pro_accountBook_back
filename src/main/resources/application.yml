@@ -4,7 +4,7 @@ spring:
         # url: jdbc:oracle:thin:@192.168.0.37:1521:orcl
         # username: student
         # password: 1234
-        url: jdbc:oracle:thin:@192.168.0.6:1521:xe
+        url: jdbc:oracle:thin:@192.168.0.12:1521:xe
         username: accountbook
         password: ab1234
 
@@ -36,5 +36,7 @@ accountbook:
         
     jwt:
         secretKey: book!@sec
-        tokenValidTime: 1000000
+        tokenValidTime: 60000
         tokenType: accbook
+        refreshKey: book!@sec
+        refreshValidTime: 18000000

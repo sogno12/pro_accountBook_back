@@ -48,7 +48,9 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-    // 사용자 등록
+    /**
+     * 사용자 등록
+     */
     @Override
     public Long registerUser(RegisterDto registerDto) {
 
@@ -76,12 +78,14 @@ public class AuthServiceImpl implements AuthService {
         Long userId = user.getUserId();
 
 
-        // 5. 사용자 최초 가계부 생성
+        // TODO 5. 사용자 최초 가계부 생성
 
         return userId;
-
     }
 
+    /**
+     * loginId 기존 존재 여부 반환 (True/False)
+     */
     private boolean isExistLoginId(String loginId) {
         return userAuthRepository.findById(loginId).isPresent();
     }
@@ -112,27 +116,34 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+    /**
+     * 패스워드 일치 확인
+     */
     public UserAuth checkPassword(String loginId, String loginPwd){
         
-        // 2. ID로 계정찾기
+        // 1. ID로 계정찾기
         UserAuth userAuth = userAuthRepository.findById(loginId)
                     .orElseThrow(() -> new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException()));
 
-        // 3. 패스워드 일치 확인
-        if( passwordEncoder.matches(loginPwd, userAuth.getLoginPwd())) {
-            // TODO
+        // 2. 패스워드 일치 확인
+        if(passwordEncoder.matches(loginPwd, userAuth.getLoginPwd())) {
+            // 2.1 맞으면 계정 정보 반환
             return userAuth;
         } else {
+            // 2.2 틀리다면 로그인 실패 반환
             throw new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException());
         }
     }
     
+    /**
+     * 토큰 생성/반환 및 UserToken 저장
+     */
     public AuthenticationBean getAuthenticationBean(String loginId, User user, UserAuth userAuth, String ip) {
 
-        // 6. 토큰 가져오기
-        String accessToken = jwtTokenProvider.createToken(SecretType.ACCESS_TOKEN, String.valueOf(loginId), user.getUserId());
+        // 1. 토큰 생성
+        String accessToken = jwtTokenProvider.createToken(SecretType.ACCESS_TOKEN, user.getUserId(), String.valueOf(loginId));
 
-        // 7. 반환 정보는 로그인API 반환 시와 동일한 구조로 반환.
+        // 2. 토큰 반환 정보는 로그인API 반환 시와 동일한 구조로 반환.
         AuthenticationBean authenticationBean = new AuthenticationBean();
         authenticationBean.setUserId(user.getUserId());
         authenticationBean.setUserName(user.getUserName());
@@ -141,7 +152,7 @@ public class AuthServiceImpl implements AuthService {
         authenticationBean.setAccessToken(accessToken);
         authenticationBean.setExpiresIn(jwtTokenProvider.getExpiresIn(SecretType.ACCESS_TOKEN, accessToken));
 
-        // 8. USER 토큰 값 테이블에 저장
+        // 3. UserToken 테이블에 저장
         UserToken userToken = userTokenRepository.findById(user.getUserId()).orElse(new UserToken(user.getUserId()));
         userToken.setUpdate(accessToken, jwtTokenProvider.getExpiresIn(SecretType.ACCESS_TOKEN, accessToken), ip);
         userTokenRepository.save(userToken);

@@ -40,8 +40,6 @@ public class User extends BaseEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserAuth userAuth;
 
-    
-    private List<Book> books;
 
     public void setUserAuth(UserAuth userAuth) {
         this.userAuth = userAuth;

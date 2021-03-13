@@ -28,29 +28,36 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     @Value("${accountbook.jwt.secretKey}")
     private String accessTokenSecretKey;
 
+    @Value("${accountbook.jwt.refreshKey}")
+    private String refreshTokenSecretKey;
+
     // 1분
     @Value("${accountbook.jwt.tokenValidTime}")
-    private long accessTokenValidMilisecond; // 1시간만 토큰 유효
-    // private long tokenValidMilisecond = 1000L * 60 * 60; // 1시간만 토큰 유효
+    private Long accessTokenValidMilisecond; // 60초만 토큰 유효
+    // private long tokenValidMilisecond = 60 * 10000(밀리세컨드)
+
+    // 30분
+    @Value("${accountbook.jwt.refreshValidTime}")
+    private Long refreshTokenValidMilisecond;
+
 
     private static final String CLAIMS_USER_ID = "userId";
 
     /**
      * JWT 토큰 생성
      */
-    public String createToken(SecretType secretType, String userPk, Long userId) {
+    public String createToken(SecretType secretType, Long userId, String loginId) {
 
         log.info(">>>> secretType: "+ secretType);
-        log.info(">>>> userPk: "+ userPk);
+        log.info(">>>> userPk: "+ userId);
         log.info(">>>> userId: "+ userId);
 
-        Claims claims = Jwts.claims().setSubject(userPk);   // 제목
-        claims.put(CLAIMS_USER_ID, userId);     // 담고싶은정보
+        Claims claims = Jwts.claims().setSubject(loginId);   // 제목
+        claims.put(CLAIMS_USER_ID, userId);                 // 담고싶은정보
         Date issuedAt = new Date();
-        return Jwts.builder().setClaims(claims) // 데이터
-                .setIssuedAt(issuedAt) // 토큰 발행일자
-                .setExpiration(new Date(issuedAt.getTime() + getTokenValidMilisecondByType(secretType))) // set Expire
-                                                                                                         // Time
+        return Jwts.builder().setClaims(claims)             // 데이터
+                .setIssuedAt(issuedAt)                      // 토큰 발행일자
+                .setExpiration(new Date(issuedAt.getTime() + getTokenValidMilisecondByType(secretType))) // 만료 일시
                 .signWith(SignatureAlgorithm.HS256, getSecretKeyByType(secretType)) // 암호화 알고리즘, secret값 세팅
                 .compact();
     }
@@ -58,7 +65,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     /**
      * Jwt 토큰에서 로그인 아이디 구별 정보 추출
      */
-    public String getUserPk(SecretType secretType, String token) {
+    public String getLoginId(SecretType secretType, String token) {
         return Jwts.parser().setSigningKey(getSecretKeyByType(secretType)).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -84,6 +91,9 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         return req.getHeader("Authorization");
     }
 
+    /**
+     * 토큰 유효성 확인
+     */
     public boolean validateToken(SecretType secretType, String token) {
         try {
             String secretKey = getSecretKeyByType(secretType);
@@ -94,6 +104,11 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         }
     }
 
+    /**
+     * 시큐리티 타입 반환
+     * @param secretType
+     * @return
+     */
     private String getSecretKeyByType(SecretType secretType) {
 
         String secretKey = null;
@@ -132,15 +147,16 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
     }
 
-    public long getUserId(HttpServletRequest request, SecretType secretType) {
+    /**
+     * request를 통한 userId 얻기
+     * @param request
+     * @param secretType
+     * @return
+     */
+    public Long getUserId(HttpServletRequest request, SecretType secretType) {
         String token = resolveToken(request);
         token = getTokenWithoutPrefix(token);
         return getUserId(secretType, token);
     }
 
-    // public long getDeptId(HttpServletRequest request, SecretType secretType) {
-    //     String token = resolveToken(request);
-    //     token = getTokenWithoutPrefix(token);
-    //     return getDeptId(secretType, token);
-    // }
 }
