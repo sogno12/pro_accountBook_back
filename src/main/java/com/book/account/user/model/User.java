@@ -1,5 +1,7 @@
 package com.book.account.user.model;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import javax.persistence.Table;
 
 import com.book.account.auth.model.UserAuth;
 import com.book.account.common.model.BaseEntity;
+import com.book.account.mybook.model.Book;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +40,8 @@ public class User extends BaseEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserAuth userAuth;
 
+    
+    private List<Book> books;
 
     public void setUserAuth(UserAuth userAuth) {
         this.userAuth = userAuth;

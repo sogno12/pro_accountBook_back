@@ -13,7 +13,6 @@ import com.book.account.auth.repository.UserTokenRepository;
 import com.book.account.auth.service.AuthService;
 import com.book.account.common.model.dto.ApiCommonException;
 import com.book.account.config.JwtTokenProvider;
-import com.book.account.mybook.service.MybookService;
 import com.book.account.user.model.User;
 import com.book.account.user.model.consts.UserConst;
 import com.book.account.user.repository.UserRepository;
@@ -42,8 +41,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     UserTokenRepository userTokenRepository;
 
-    @Autowired
-    MybookService mybookservice;
 
     @Value("${accountbook.jwt.tokenType}")
     private String tokenType;
@@ -80,7 +77,6 @@ public class AuthServiceImpl implements AuthService {
 
 
         // 5. 사용자 최초 가계부 생성
-        mybookservice.newMybook(userId);
 
         return userId;
 
