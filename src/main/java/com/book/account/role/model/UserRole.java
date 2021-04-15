@@ -1,13 +1,17 @@
 package com.book.account.role.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.book.account.common.model.BaseEntity;
+import com.book.account.user.model.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +31,8 @@ public class UserRole extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UP_USER_ROLE_GEN")
     private Long userRoleId;
     private Long roleId;
-    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

@@ -5,8 +5,14 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import com.book.account.auth.model.consts.AuthConst.SecretType;
+import com.book.account.auth.service.AuthService;
+import com.book.account.user.model.User;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -43,14 +49,13 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
 
     private static final String CLAIMS_USER_ID = "userId";
 
+    @Autowired
+    AuthService authservice;
+
     /**
      * JWT 토큰 생성
      */
     public String createToken(SecretType secretType, Long userId, String loginId) {
-
-        log.info(">>>> secretType: "+ secretType);
-        log.info(">>>> userPk: "+ userId);
-        log.info(">>>> userId: "+ userId);
 
         Claims claims = Jwts.claims().setSubject(loginId);   // 제목
         claims.put(CLAIMS_USER_ID, userId);                 // 담고싶은정보
@@ -121,6 +126,9 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         return secretKey;
     }
 
+    /**
+     * 타입에 따른 Token 유효시간 가져오기
+     */
     private Long getTokenValidMilisecondByType(SecretType secretType) {
 
         Long tokenValidMilisecond = null;
@@ -133,6 +141,9 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         return tokenValidMilisecond;
     }
 
+    /**
+     * Token영역을 나눔
+     */
     public String getTokenWithoutPrefix(String token) {
         if (!StringUtils.isEmpty(token)) {
             String[] tokenArray = token.split(" ");
@@ -157,6 +168,15 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         String token = resolveToken(request);
         token = getTokenWithoutPrefix(token);
         return getUserId(secretType, token);
+    }
+
+    // Jwt 토큰으로 인증 정보를 조회
+    @Cacheable(value = "userInfo")
+    public Authentication getAuthentication(String token) {
+        User user = authservice.loadUserByUserName(String.valueOf(this.getUserId(SecretType.ACCESS_TOKEN, token)));
+        // TODO Role 조회하여 담기
+
+        return new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
     }
 
 }

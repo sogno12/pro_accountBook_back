@@ -146,7 +146,7 @@ public class AuthServiceImpl implements AuthService {
         // 2. 토큰 반환 정보는 로그인API 반환 시와 동일한 구조로 반환.
         AuthenticationBean authenticationBean = new AuthenticationBean();
         authenticationBean.setUserId(user.getUserId());
-        authenticationBean.setUserName(user.getUserName());
+        authenticationBean.setUserName(user.getRealUserName());
         authenticationBean.setLoginId(loginId);
         authenticationBean.setTokenType(tokenType);
         authenticationBean.setAccessToken(accessToken);
@@ -158,6 +158,13 @@ public class AuthServiceImpl implements AuthService {
         userTokenRepository.save(userToken);
 
         return authenticationBean;
+    }
+
+    @Override
+    public User loadUserByUserName(String userId) {
+        User user = userRepository.findByUserId(Long.parseLong(userId))
+        .orElseThrow(() -> new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException()));
+        return user;
     }
 
 
