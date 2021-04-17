@@ -10,7 +10,8 @@ public class MenuConst {
 
     @Getter
     public enum ResponseError {
-        DUPLICATE_MENU_ID(HttpStatus.CONFLICT, "409-1", "중복된 메뉴 ID입니다."),
+        NOT_FOUND_MENU_ID(HttpStatus.NOT_FOUND, "404-1", "존재하지 않는 메뉴 ID"),
+        DUPLICATE_MENU_ID(HttpStatus.CONFLICT, "409-1", "중복된 메뉴 ID"),
         ;
         
         HttpStatus status;

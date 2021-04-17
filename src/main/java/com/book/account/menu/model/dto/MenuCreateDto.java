@@ -1,6 +1,5 @@
 package com.book.account.menu.model.dto;
 
-import com.book.account.common.model.BaseCreatedEntity;
 import com.book.account.common.model.BaseEntity;
 import com.book.account.menu.model.Menu;
 

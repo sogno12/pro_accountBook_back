@@ -29,8 +29,7 @@ public class MenuServiceImpl implements MenuService {
     /** 메뉴 상세 조회 */
     @Override
     public Menu getMenu(String menuId) {
-        // TODO Exception처리
-        Menu findMenu = menuRepository.findById(menuId).orElseThrow();
+        Menu findMenu = menuRepository.findById(menuId).orElseThrow(MenuConst.ResponseError.NOT_FOUND_MENU_ID::throwException);
         return findMenu;
     }
 
@@ -55,8 +54,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public void updateMenu(MenuUpdateDto menuUpdateDto) {
         // 1. 메뉴 조회
-        // TODO Exception처리
-        Menu findMenu = menuRepository.findById(menuUpdateDto.getMenuId()).orElseThrow();
+        Menu findMenu = menuRepository.findById(menuUpdateDto.getMenuId()).orElseThrow(MenuConst.ResponseError.NOT_FOUND_MENU_ID::throwException);
         
         // 2. 메뉴 정보 업데이트
         findMenu.toUpdateMenu(menuUpdateDto);
@@ -69,8 +67,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public void deleteMenu(String menuId) {
         // 1. 메뉴 조회 및 삭제
-        // TODO Exception처리
-        Menu findMenu = menuRepository.findById(menuId).orElseThrow();
+        Menu findMenu = menuRepository.findById(menuId).orElseThrow(MenuConst.ResponseError.NOT_FOUND_MENU_ID::throwException);
         menuRepository.delete(findMenu);
     }
 
