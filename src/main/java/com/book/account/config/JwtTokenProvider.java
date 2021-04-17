@@ -173,7 +173,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
     // Jwt 토큰으로 인증 정보를 조회
     @Cacheable(value = "userInfo")
     public Authentication getAuthentication(String token) {
-        User user = authservice.loadUserByUserName(String.valueOf(this.getUserId(SecretType.ACCESS_TOKEN, token)));
+        User user = authservice.loadUserByUserId(String.valueOf(this.getUserId(SecretType.ACCESS_TOKEN, token)));
         // TODO Role 조회하여 담기
 
         return new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
