@@ -10,9 +10,11 @@ import javax.persistence.Table;
 
 import com.book.account.common.model.BaseEntity;
 import com.book.account.user.model.User;
-import com.book.account.user.model.consts.UserConst.AuthType;
+import com.book.account.user.model.consts.UserConst.Status;
+import com.book.account.user.model.dto.UserUpdateDto;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,15 +33,21 @@ public class UserAuth extends BaseEntity {
     private String loginId;
     private String loginPwd;
 
-    @ColumnDefault("USER")
+    @ColumnDefault("ACTIVE")
     @Enumerated(value = EnumType.STRING)
-    private AuthType authType;
+    private Status status;
 
+    // 연관관계설정 - 연관엔티티의 PK를 가지고 있는 쪽이 주인
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void toUpdateEntity(UserUpdateDto userUpdateDto) {
+        this.status = StringUtils.isEmpty(userUpdateDto.getStatus()) ? this.status : userUpdateDto.getStatus();
+        this.setUpdatedBy(userUpdateDto.getUpdatedBy());
     }
 }

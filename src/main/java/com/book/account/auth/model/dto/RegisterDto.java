@@ -2,7 +2,7 @@ package com.book.account.auth.model.dto;
 
 import com.book.account.auth.model.UserAuth;
 import com.book.account.user.model.User;
-import com.book.account.user.model.consts.UserConst.AuthType;
+import com.book.account.user.model.consts.UserConst.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class RegisterDto {
         return User.builder().userName(this.userName).email(this.email).build();
 	}
 	public UserAuth toUserAuthEntity() {
-		return UserAuth.builder().loginId(this.loginId).loginPwd(this.loginPwd).authType(AuthType.USER).build();
+		return UserAuth.builder().loginId(this.loginId).loginPwd(this.loginPwd).status(Status.ACTIVE).build();
 	}
 
 }

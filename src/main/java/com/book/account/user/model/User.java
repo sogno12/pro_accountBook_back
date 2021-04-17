@@ -18,12 +18,14 @@ import javax.persistence.Table;
 import com.book.account.auth.model.UserAuth;
 import com.book.account.common.model.BaseEntity;
 import com.book.account.role.model.UserRole;
+import com.book.account.user.model.dto.UserUpdateDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,7 +55,7 @@ public class User extends BaseEntity implements UserDetails {
     private String userName;
     private String email;
 
-    // @OneToOne(mappedBy = "user")
+    // 연관관계설정 - 연관관계 하위 mappedBy로 표시
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserAuth userAuth;
 
@@ -112,5 +114,11 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    public void toUpdateEntity(UserUpdateDto userUpdateDto) {
+        this.userName = StringUtils.isEmpty(userUpdateDto.getUserName()) ? this.userName : userUpdateDto.getUserName();
+        this.email = StringUtils.isEmpty(userUpdateDto.getEmail()) ? this.email : userUpdateDto.getEmail();
+        this.setUpdatedBy(userUpdateDto.getUpdatedBy());
     }
 }

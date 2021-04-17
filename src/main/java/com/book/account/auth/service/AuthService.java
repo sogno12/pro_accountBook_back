@@ -22,7 +22,7 @@ public interface AuthService {
     /**
      * 사용자 조회 (Auth)
      */
-    public User loadUserByUserName(String userId);
+    public User loadUserByUserId(String userId);
 
     /**
      * 사용자 권한 조회 (Auth)

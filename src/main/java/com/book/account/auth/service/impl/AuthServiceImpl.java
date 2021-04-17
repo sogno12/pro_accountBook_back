@@ -161,8 +161,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public User loadUserByUserName(String userId) {
-        User user = userRepository.findByUserId(Long.parseLong(userId))
+    public User loadUserByUserId(String userId) {
+        User user = userRepository.findById(Long.parseLong(userId))
         .orElseThrow(() -> new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException()));
         return user;
     }
