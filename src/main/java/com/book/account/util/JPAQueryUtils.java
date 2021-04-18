@@ -1,6 +1,5 @@
 package com.book.account.util;
 
-import com.book.account.user.model.dto.UserDto;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.EntityPathBase;
@@ -18,7 +17,7 @@ public class JPAQueryUtils {
         throw new IllegalStateException("JPAQueryUtils");
     }
 
-    public static void queryDslGenOrderBy(EntityPathBase entity, Sort.Order o, JPAQuery<UserDto> query) {
+    public static void queryDslGenOrderBy(EntityPathBase entity, Sort.Order o, JPAQuery query) {
         String fieldName = o.getProperty();
         try {
             entity.getClass().getDeclaredField(fieldName);

@@ -30,8 +30,7 @@ public class MenuConst {
     }
 
     public enum MenuType {
-
-
+        ROUTE,
     }
 
 }
