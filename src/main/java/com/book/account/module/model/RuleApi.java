@@ -27,5 +27,5 @@ public class RuleApi extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UP_RULE_API_GEN")
     private Long ruleApiId;
     private String ruleId;
-    private Long apiId;
+    private String apiId;
 }

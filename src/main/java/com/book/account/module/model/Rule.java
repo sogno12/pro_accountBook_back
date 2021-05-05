@@ -1,13 +1,13 @@
 package com.book.account.module.model;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.book.account.common.model.BaseEntity;
+import com.book.account.module.model.dto.RuleUpdateDto;
+
+import org.springframework.util.StringUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,13 +20,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "UP_RULE")
-@SequenceGenerator(name = "UP_RULE_GEN", sequenceName = "UP_RULE_SEQ", initialValue = 1, allocationSize = 1)
 public class Rule extends BaseEntity {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "UP_RULE_GEN")
-    private Long ruleId;
+    private String ruleId;
     private String ruleName;
-    private Long moduleId;
+    private String moduleId;
+    private Integer sortNo;
+
+    public void toUpdate(RuleUpdateDto ruleUpdateDto) {
+        this.ruleName = StringUtils.isEmpty(ruleUpdateDto.getRuleName()) ? this.ruleName : ruleUpdateDto.getRuleName();
+        this.sortNo = StringUtils.isEmpty(ruleUpdateDto.getSortNo()) ? this.sortNo : ruleUpdateDto.getSortNo();
+        this.setUpdatedBy(ruleUpdateDto.getUpdatedBy());
+    }
     
 }
