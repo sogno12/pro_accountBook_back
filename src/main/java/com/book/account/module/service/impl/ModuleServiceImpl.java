@@ -32,8 +32,7 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public void createModule(ModuleCreateDto moduleCreateDto) {
         Module module = moduleCreateDto.toEntity();
-        module.setCreatedBy(moduleCreateDto.getCreatedBy());
-        module.setUpdatedBy(moduleCreateDto.getUpdatedBy());
+        module.createdByUser(moduleCreateDto.getCreatedBy());
         moduleRepository.save(module);
     }
 

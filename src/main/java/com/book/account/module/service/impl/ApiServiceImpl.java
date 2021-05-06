@@ -34,8 +34,7 @@ public class ApiServiceImpl implements ApiService {
     @Override
     public void createApi(ApiCreateDto apiCreateDto) {
         Api api = apiCreateDto.toApiEntity();
-        api.setCreatedBy(apiCreateDto.getCreatedBy());
-        api.setUpdatedBy(apiCreateDto.getUpdatedBy());
+        api.createdByUser(apiCreateDto.getCreatedBy());
         apiRepository.save(api);
     }
 

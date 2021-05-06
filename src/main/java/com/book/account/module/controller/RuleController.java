@@ -3,8 +3,8 @@ package com.book.account.module.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import com.book.account.auth.model.consts.AuthConst.SecretType;
+import com.book.account.common.mapper.ResponseMapper;
 import com.book.account.common.model.dto.ApiBaseResult;
-import com.book.account.common.service.ResponseService;
 import com.book.account.config.JwtTokenProvider;
 import com.book.account.module.model.Rule;
 import com.book.account.module.model.dto.RuleApiCreateDto;
@@ -31,22 +31,20 @@ import lombok.RequiredArgsConstructor;
 public class RuleController {
 
     private final RuleService ruleService;
-    private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/{ruleId}")
     public ApiBaseResult<Rule> getRule(@PathVariable("ruleId") String ruleId) {
         Rule rule = ruleService.getRule(ruleId);
-        return responseService.getApiBaseResult(HttpStatus.OK, rule);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, rule);
     }
 
     @PostMapping
     public ApiBaseResult<String> createRule(HttpServletRequest request, @RequestBody RuleCreateDto ruleCreateDto) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        ruleCreateDto.setCreatedBy(requestId);
-        ruleCreateDto.setUpdatedBy(requestId);
+        ruleCreateDto.createdByUser(requestId);
         ruleService.createRule(ruleCreateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @PutMapping("/{ruleId}")
@@ -54,34 +52,33 @@ public class RuleController {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         ruleUpdateDto.setUpdatedBy(requestId);
         ruleService.updateRule(ruleUpdateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @DeleteMapping("/{ruleId}")
     public ApiBaseResult<String> deleteRule(@PathVariable("ruleId") String ruleId) {
         ruleService.deleteRule(ruleId);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @PostMapping("/api")
     public ApiBaseResult<String> createRuleApi(HttpServletRequest request, @RequestBody RuleApiCreateDto ruleApis) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        ruleApis.setCreatedBy(requestId);
-        ruleApis.setUpdatedBy(requestId);
+        ruleApis.createdByUser(requestId);
         ruleService.setRuleApis(ruleApis);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @GetMapping("/{ruleId}/{apiId}")
     public ApiBaseResult<RuleApiDto> getApi(@PathVariable("ruleId") String ruleId, @PathVariable("apiId") String apiId){
         RuleApiDto apiDto = ruleService.getApi(ruleId, apiId);
-        return responseService.getApiBaseResult(HttpStatus.OK, apiDto);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, apiDto);
     }
     
     @DeleteMapping("/{ruleId}/{apiId}")
     public ApiBaseResult<String> deleteRuleApi(@PathVariable("ruleId") String ruleId,
             @PathVariable("apiId") String apiId) {
                 ruleService.deleteRuleApi(ruleId, apiId);
-        return responseService.getApiBaseResult(HttpStatus.OK, ""); 
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, ""); 
     }  
 }

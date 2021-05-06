@@ -5,8 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.book.account.auth.model.consts.AuthConst.SecretType;
+import com.book.account.common.mapper.ResponseMapper;
 import com.book.account.common.model.dto.ApiBaseResult;
-import com.book.account.common.service.ResponseService;
 import com.book.account.config.JwtTokenProvider;
 import com.book.account.menu.model.Menu;
 import com.book.account.menu.model.dto.MenuCreateDto;
@@ -31,44 +31,42 @@ import lombok.AllArgsConstructor;
 public class MenuController {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ResponseService responseService;
     private final MenuService menuService;
 
     @GetMapping
     public ApiBaseResult<List<Menu>> getMenus(){
         List<Menu> menus = menuService.getMenus();
-        return responseService.getApiBaseResult(HttpStatus.OK, menus);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, menus);
     }
 
     @GetMapping(value="/{menuId}")
     public ApiBaseResult<Menu> getMenu(@PathVariable("menuId") String menuId) {
         Menu menu = menuService.getMenu(menuId);
-        return responseService.getApiBaseResult(HttpStatus.OK, menu);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, menu);
     }
 
     @PostMapping
     public ApiBaseResult<String> createMenu(HttpServletRequest request, @RequestBody MenuCreateDto menuCreateDto){
         Long userId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        menuCreateDto.setCreatedBy(userId);
-        menuCreateDto.setUpdatedBy(userId);
+        menuCreateDto.createdByUser(userId);
         
         menuService.createMenu(menuCreateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @PutMapping(value="/{menuId}")
     public ApiBaseResult<String> updateMenu(HttpServletRequest request, @RequestBody MenuUpdateDto menuUpdateDto) {
         Long userId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        menuUpdateDto.setUpdatedBy(userId);
+        menuUpdateDto.chageUpdatedBy(userId);
 
         menuService.updateMenu(menuUpdateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @DeleteMapping(value="/{menuId}")
     public ApiBaseResult<String> deleteMenu(@PathVariable("menuId") String menuId){
         menuService.deleteMenu(menuId);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
 

@@ -40,6 +40,6 @@ public class Api extends BaseEntity {
         this.url = apiUpdateDto.getUrl();
         this.description = apiUpdateDto.getDescription();
         this.accessScope = apiUpdateDto.getAccessScope();
-        this.setUpdatedBy(apiUpdateDto.getUpdatedBy());
+        this.chageUpdatedBy(apiUpdateDto.getUpdatedBy());
     }
 }

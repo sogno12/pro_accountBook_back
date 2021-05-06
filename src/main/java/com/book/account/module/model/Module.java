@@ -31,6 +31,6 @@ public class Module extends BaseEntity {
     public void toUpdate(ModuleUpdateDto moduleUpdateDto) {
         this.moduleName = StringUtils.isEmpty(moduleUpdateDto.getModuleName()) ? this.moduleName : moduleUpdateDto.getModuleName();
         this.sortNo = StringUtils.isEmpty(moduleUpdateDto.getSortNo()) ? this.sortNo : moduleUpdateDto.getSortNo();
-        this.setUpdatedBy(moduleUpdateDto.getUpdatedBy());
+        this.chageUpdatedBy(moduleUpdateDto.getUpdatedBy());
     }   
 }

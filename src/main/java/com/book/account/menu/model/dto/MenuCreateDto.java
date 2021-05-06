@@ -21,8 +21,7 @@ public class MenuCreateDto extends BaseEntity {
         Menu menu = Menu.builder().menuId(this.menuId).menuName(this.menuName).upMenuId(this.upMenuId).sortNo(this.sortNo)
                 .menuPath(this.menuPath).menuIcon(this.menuIcon).description(this.description).menuType(this.menuType)
                 .build();
-        menu.setCreatedBy(this.getCreatedBy());
-        menu.setUpdatedBy(this.getUpdatedBy());
+        menu.createdByUser(this.getCreatedBy());
         return menu;
     }
 }

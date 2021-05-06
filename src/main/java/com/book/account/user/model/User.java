@@ -119,6 +119,6 @@ public class User extends BaseEntity implements UserDetails {
     public void toUpdateEntity(UserUpdateDto userUpdateDto) {
         this.userName = StringUtils.isEmpty(userUpdateDto.getUserName()) ? this.userName : userUpdateDto.getUserName();
         this.email = StringUtils.isEmpty(userUpdateDto.getEmail()) ? this.email : userUpdateDto.getEmail();
-        this.setUpdatedBy(userUpdateDto.getUpdatedBy());
+        this.chageUpdatedBy(userUpdateDto.getUpdatedBy());
     }
 }

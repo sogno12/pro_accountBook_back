@@ -31,7 +31,7 @@ public class Rule extends BaseEntity {
     public void toUpdate(RuleUpdateDto ruleUpdateDto) {
         this.ruleName = StringUtils.isEmpty(ruleUpdateDto.getRuleName()) ? this.ruleName : ruleUpdateDto.getRuleName();
         this.sortNo = StringUtils.isEmpty(ruleUpdateDto.getSortNo()) ? this.sortNo : ruleUpdateDto.getSortNo();
-        this.setUpdatedBy(ruleUpdateDto.getUpdatedBy());
+        this.chageUpdatedBy(ruleUpdateDto.getUpdatedBy());
     }
     
 }

@@ -27,8 +27,7 @@ public class RuleServiceImpl implements RuleService {
     @Override
     public void createRule(RuleCreateDto ruleCreateDto) {
         Rule rule = ruleCreateDto.toEntity();
-        rule.setCreatedBy(ruleCreateDto.getCreatedBy());
-        rule.setUpdatedBy(ruleCreateDto.getUpdatedBy());
+        rule.createdByUser(ruleCreateDto.getCreatedBy());
         ruleRepository.save(rule);
     }
 
@@ -70,8 +69,7 @@ public class RuleServiceImpl implements RuleService {
             
             // 3. ruleApi 없으면 저장
             if(findRuleApi == null) {
-               ruleApi.setCreatedBy(ruleApis.getCreatedBy());
-               ruleApi.setUpdatedBy(ruleApis.getUpdatedBy());
+               ruleApi.createdByUser(ruleApis.getCreatedBy());
                ruleApiRepository.save(ruleApi);
            } else {
                continue;

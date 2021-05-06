@@ -67,10 +67,8 @@ public class AuthServiceImpl implements AuthService {
         UserAuth userAuth = registerDto.toUserAuthEntity();
 
         // 4. 사용자 등록
-        user.setCreatedBy(0L);
-        user.setUpdatedBy(0L);
-        userAuth.setCreatedBy(0L);
-        userAuth.setUpdatedBy(0L);
+        user.createdByUser(0L);
+        userAuth.createdByUser(0L);
 
         user.setUserAuth(userAuth);
         userRepository.save(user);

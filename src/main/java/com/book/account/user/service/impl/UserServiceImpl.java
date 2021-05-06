@@ -87,14 +87,8 @@ public class UserServiceImpl implements UserService {
         UserAuth userAuth = userCreateDto.toUserAuthEntity();
 
         // 4. 사용자 등록
-        user.setCreatedBy(userCreateDto.getCreatedBy());
-        ;
-        user.setUpdatedBy(userCreateDto.getUpdatedBy());
-        ;
-        userAuth.setCreatedBy(userCreateDto.getCreatedBy());
-        ;
-        userAuth.setUpdatedBy(userCreateDto.getUpdatedBy());
-        ;
+        user.createdByUser(userCreateDto.getCreatedBy());
+        userAuth.createdByUser(userCreateDto.getCreatedBy());
 
         user.setUserAuth(userAuth);
         userRepository.save(user);

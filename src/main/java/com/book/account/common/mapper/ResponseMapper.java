@@ -1,14 +1,12 @@
-package com.book.account.common.service;
+package com.book.account.common.mapper;
 
 import com.book.account.common.model.dto.ApiBaseResult;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 
-@Service
-public class ResponseService {
+public class ResponseMapper {
 
-    public <T> ApiBaseResult<T> getApiBaseResult(HttpStatus httpStatus, T data) {
+    public static <T> ApiBaseResult<T> getApiBaseResult(HttpStatus httpStatus, T data) {
         ApiBaseResult<T> result = new ApiBaseResult<>();
         result.setResult(data);
         result.setStatus(httpStatus.value());
@@ -16,7 +14,7 @@ public class ResponseService {
         return result;
     }
 
-    public <T> ApiBaseResult<T> getApiBaseResult(HttpStatus httpStatus, String messageCode, T data) {
+    public static <T> ApiBaseResult<T> getApiBaseResult(HttpStatus httpStatus, String messageCode, T data) {
         ApiBaseResult<T> result = new ApiBaseResult<>();
         result.setResult(data);
         result.setStatus(httpStatus.value());
