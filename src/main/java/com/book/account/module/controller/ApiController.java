@@ -49,7 +49,7 @@ public class ApiController {
     @PostMapping
     public ApiBaseResult<String> createApi(HttpServletRequest request, @RequestBody ApiCreateDto apiCreateDto) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        apiCreateDto.createdByUser(requestId);
+        apiCreateDto.setCreatedBy(requestId);
         apiService.createApi(apiCreateDto);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }

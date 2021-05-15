@@ -49,7 +49,7 @@ public class ModuleController {
     @PostMapping
     public ApiBaseResult<String> createModule(HttpServletRequest request, @RequestBody ModuleCreateDto moduleCreateDto) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        moduleCreateDto.createdByUser(requestId);
+        moduleCreateDto.setCreatedBy(requestId);
         moduleService.createModule(moduleCreateDto);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }

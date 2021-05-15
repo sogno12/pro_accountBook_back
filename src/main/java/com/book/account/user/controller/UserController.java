@@ -49,7 +49,7 @@ public class UserController {
     @PostMapping
     public ApiBaseResult<String> createUser(HttpServletRequest request, @RequestBody UserCreateDto userCreateDto) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        userCreateDto.createdByUser(requestId);
+        userCreateDto.setCreatedBy(requestId);
         userService.createUser(userCreateDto);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
 

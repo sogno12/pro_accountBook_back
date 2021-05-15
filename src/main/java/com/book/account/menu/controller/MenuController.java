@@ -48,7 +48,7 @@ public class MenuController {
     @PostMapping
     public ApiBaseResult<String> createMenu(HttpServletRequest request, @RequestBody MenuCreateDto menuCreateDto){
         Long userId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        menuCreateDto.createdByUser(userId);
+        menuCreateDto.setCreatedBy(userId);    
         
         menuService.createMenu(menuCreateDto);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
@@ -57,7 +57,7 @@ public class MenuController {
     @PutMapping(value="/{menuId}")
     public ApiBaseResult<String> updateMenu(HttpServletRequest request, @RequestBody MenuUpdateDto menuUpdateDto) {
         Long userId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        menuUpdateDto.chageUpdatedBy(userId);
+        menuUpdateDto.setUpdatedBy(userId);
 
         menuService.updateMenu(menuUpdateDto);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");

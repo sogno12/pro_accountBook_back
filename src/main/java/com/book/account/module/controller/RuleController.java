@@ -42,7 +42,7 @@ public class RuleController {
     @PostMapping
     public ApiBaseResult<String> createRule(HttpServletRequest request, @RequestBody RuleCreateDto ruleCreateDto) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        ruleCreateDto.createdByUser(requestId);
+        ruleCreateDto.setCreatedBy(requestId);
         ruleService.createRule(ruleCreateDto);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
@@ -64,7 +64,7 @@ public class RuleController {
     @PostMapping("/api")
     public ApiBaseResult<String> createRuleApi(HttpServletRequest request, @RequestBody RuleApiCreateDto ruleApis) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
-        ruleApis.createdByUser(requestId);
+        ruleApis.setCreatedBy(requestId);
         ruleService.setRuleApis(ruleApis);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
