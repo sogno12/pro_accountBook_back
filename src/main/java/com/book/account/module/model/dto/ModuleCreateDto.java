@@ -9,7 +9,7 @@ public class ModuleCreateDto {
     
     private String ModuleId;
     private String ModuleName;
-    private Integer sortNo;
+    private int sortNo;
 
     private Long createdBy;
     private Long updatedBy;

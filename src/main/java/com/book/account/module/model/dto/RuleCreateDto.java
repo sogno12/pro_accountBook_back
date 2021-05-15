@@ -9,7 +9,7 @@ public class RuleCreateDto {
     private String ruleId;
     private String ruleName;
     private String moduleId;
-    private Integer sortNo;
+    private int sortNo;
 
     private Long createdBy;
     private Long updatedBy;

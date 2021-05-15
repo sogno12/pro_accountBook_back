@@ -32,7 +32,7 @@ public class AuthController {
     private final AuthService authService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping(value = "/login")
+    @PostMapping("/login")
     public ApiBaseResult<AuthenticationBean> login(HttpServletRequest request, @RequestBody LoginDto loginDto) {
 
         // 1. IP 주소
@@ -41,16 +41,16 @@ public class AuthController {
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, authenticationBean);
     }
     
-    @PostMapping(value = "/register")
+    @PostMapping("/register")
     public ApiBaseResult<String> register(HttpServletRequest request, @RequestBody RegisterDto registerDto) {
         authService.registerUser(registerDto);
 
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
-    @GetMapping(value = "/checkAuthorization")
+    @GetMapping("/checkAuthorization")
     public ApiBaseResult<String> checkAuthrization(@RequestHeader(value = "Authorization") String token) {
-        Boolean valid = jwtTokenProvider.validateToken(SecretType.ACCESS_TOKEN, jwtTokenProvider.getTokenWithoutPrefix(token));
+        boolean valid = jwtTokenProvider.validateToken(SecretType.ACCESS_TOKEN, jwtTokenProvider.getTokenWithoutPrefix(token));
 
         if (!jwtTokenProvider.validateToken(SecretType.ACCESS_TOKEN, jwtTokenProvider.getTokenWithoutPrefix(token))) {
             throw new ApiCommonException(UserConst.ResponseError.INVALID_TOKEN.throwException());

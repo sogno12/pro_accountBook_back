@@ -1,8 +1,12 @@
 package com.book.account.module.repository;
 
 import com.book.account.module.model.Module;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.book.account.module.repository.custom.ModuleRepositoryCustom;
 
-public interface ModuleRepository extends JpaRepository<Module, String>  {
-    
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ModuleRepository extends JpaRepository<Module, String>, ModuleRepositoryCustom {
+
 }

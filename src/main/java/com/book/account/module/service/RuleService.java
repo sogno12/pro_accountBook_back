@@ -1,9 +1,9 @@
 package com.book.account.module.service;
 
-import com.book.account.module.model.Rule;
 import com.book.account.module.model.dto.RuleApiCreateDto;
 import com.book.account.module.model.dto.RuleApiDto;
 import com.book.account.module.model.dto.RuleCreateDto;
+import com.book.account.module.model.dto.RuleDto;
 import com.book.account.module.model.dto.RuleUpdateDto;
 
 public interface RuleService {
@@ -12,7 +12,7 @@ public interface RuleService {
     void createRule(RuleCreateDto ruleCreateDto);
 
     /** 권한 상세 조회 */
-    Rule getRule(String ruleId);
+    RuleDto getRule(String ruleId);
 
     /** 권한 수정 */
     void updateRule(RuleUpdateDto ruleUpdateDto);

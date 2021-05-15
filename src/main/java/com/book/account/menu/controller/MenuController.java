@@ -10,6 +10,7 @@ import com.book.account.common.model.dto.ApiBaseResult;
 import com.book.account.config.JwtTokenProvider;
 import com.book.account.menu.model.Menu;
 import com.book.account.menu.model.dto.MenuCreateDto;
+import com.book.account.menu.model.dto.MenuDto;
 import com.book.account.menu.model.dto.MenuUpdateDto;
 import com.book.account.menu.service.MenuService;
 
@@ -34,14 +35,14 @@ public class MenuController {
     private final MenuService menuService;
 
     @GetMapping
-    public ApiBaseResult<List<Menu>> getMenus(){
-        List<Menu> menus = menuService.getMenus();
+    public ApiBaseResult<List<MenuDto>> getMenus(){
+        List<MenuDto> menus = menuService.getMenus();
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, menus);
     }
 
-    @GetMapping(value="/{menuId}")
-    public ApiBaseResult<Menu> getMenu(@PathVariable("menuId") String menuId) {
-        Menu menu = menuService.getMenu(menuId);
+    @GetMapping("/{menuId}")
+    public ApiBaseResult<MenuDto> getMenu(@PathVariable("menuId") String menuId) {
+        MenuDto menu = menuService.getMenu(menuId);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, menu);
     }
 
@@ -54,7 +55,7 @@ public class MenuController {
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
-    @PutMapping(value="/{menuId}")
+    @PutMapping("/{menuId}")
     public ApiBaseResult<String> updateMenu(HttpServletRequest request, @RequestBody MenuUpdateDto menuUpdateDto) {
         Long userId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         menuUpdateDto.setUpdatedBy(userId);
@@ -63,7 +64,7 @@ public class MenuController {
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
-    @DeleteMapping(value="/{menuId}")
+    @DeleteMapping("/{menuId}")
     public ApiBaseResult<String> deleteMenu(@PathVariable("menuId") String menuId){
         menuService.deleteMenu(menuId);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");

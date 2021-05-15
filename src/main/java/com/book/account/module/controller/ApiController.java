@@ -41,8 +41,8 @@ public class ApiController {
     }
 
     @GetMapping("/{apiId}")
-    public ApiBaseResult<Api> getApi(@PathVariable("apiId") String apiId) {
-        Api api = apiService.getApi(apiId);
+    public ApiBaseResult<ApiDto> getApi(@PathVariable("apiId") String apiId) {
+        ApiDto api = apiService.getApi(apiId);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, api);
     }
 

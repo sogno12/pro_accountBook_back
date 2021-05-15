@@ -25,11 +25,11 @@ public class Module extends BaseEntity {
     @Id
     private String moduleId;
     private String moduleName;
-    private Integer sortNo;
+    private int sortNo;
     
-    public void toUpdate(ModuleUpdateDto moduleUpdateDto) {
-        this.moduleName = StringUtils.isEmpty(moduleUpdateDto.getModuleName()) ? this.moduleName : moduleUpdateDto.getModuleName();
-        this.sortNo = StringUtils.isEmpty(moduleUpdateDto.getSortNo()) ? this.sortNo : moduleUpdateDto.getSortNo();
-        this.chageUpdatedBy(moduleUpdateDto.getUpdatedBy());
-    }   
+   public void toUpdate(Module module) {
+       this.moduleName = module.getModuleName();
+       this.sortNo = module.getSortNo();
+       this.chageUpdatedBy(module.getUpdatedBy());
+   } 
 }

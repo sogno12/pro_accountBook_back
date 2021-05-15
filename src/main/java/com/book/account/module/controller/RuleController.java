@@ -6,10 +6,10 @@ import com.book.account.auth.model.consts.AuthConst.SecretType;
 import com.book.account.common.mapper.ResponseMapper;
 import com.book.account.common.model.dto.ApiBaseResult;
 import com.book.account.config.JwtTokenProvider;
-import com.book.account.module.model.Rule;
 import com.book.account.module.model.dto.RuleApiCreateDto;
 import com.book.account.module.model.dto.RuleApiDto;
 import com.book.account.module.model.dto.RuleCreateDto;
+import com.book.account.module.model.dto.RuleDto;
 import com.book.account.module.model.dto.RuleUpdateDto;
 import com.book.account.module.service.RuleService;
 
@@ -34,8 +34,8 @@ public class RuleController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/{ruleId}")
-    public ApiBaseResult<Rule> getRule(@PathVariable("ruleId") String ruleId) {
-        Rule rule = ruleService.getRule(ruleId);
+    public ApiBaseResult<RuleDto> getRule(@PathVariable("ruleId") String ruleId) {
+        RuleDto rule = ruleService.getRule(ruleId);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, rule);
     }
 

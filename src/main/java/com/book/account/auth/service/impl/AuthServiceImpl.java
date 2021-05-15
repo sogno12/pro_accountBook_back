@@ -20,8 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
@@ -46,6 +48,7 @@ public class AuthServiceImpl implements AuthService {
      * 사용자 등록
      */
     @Override
+    @Transactional
     public Long registerUser(RegisterDto registerDto) {
 
         // 1. 비밀번호 암호화

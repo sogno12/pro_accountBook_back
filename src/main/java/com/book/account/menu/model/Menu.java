@@ -26,20 +26,21 @@ public class Menu extends BaseEntity {
     private String menuId;
     private String menuName;
     private String upMenuId;
-    private Integer sortNo;
+    private int sortNo;
     private String menuPath;
     private String menuIcon;
     private String description;
     private String menuType;
 
-    public void toUpdateMenu(MenuUpdateDto menuUpdateDto) {
-        this.menuId = menuUpdateDto.getMenuId();
-        this.menuName = StringUtils.isEmpty(menuUpdateDto.getMenuName()) ? this.menuName : menuUpdateDto.getMenuName();
-        this.upMenuId = StringUtils.isEmpty(menuUpdateDto.getUpMenuId()) ? this.upMenuId : menuUpdateDto.getUpMenuId();
-        this.sortNo = StringUtils.isEmpty(menuUpdateDto.getSortNo()) ? this.sortNo : menuUpdateDto.getSortNo();
-        this.menuPath = menuUpdateDto.getMenuPath();
-        this.menuIcon = menuUpdateDto.getMenuIcon();
-        this.description = menuUpdateDto.getDescription();
-        this.menuType = StringUtils.isEmpty(menuUpdateDto.getMenuType()) ? this.menuType : menuUpdateDto.getMenuType();
+    public void toUpdate(Menu update) {
+        this.menuName = update.getMenuName();
+        this.upMenuId = update.getUpMenuId();
+        this.sortNo = update.getSortNo();
+        this.menuPath = update.getMenuPath();
+        this.menuIcon = update.getMenuIcon();
+        this.description = update.getDescription();
+        this.menuType = update.getMenuType();
+
+        this.chageUpdatedBy(update.getUpdatedBy());
     }
 }

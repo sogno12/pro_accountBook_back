@@ -46,8 +46,8 @@ public class UserAuth extends BaseEntity {
         this.user = user;
     }
 
-    public void toUpdateEntity(UserUpdateDto userUpdateDto) {
-        this.status = StringUtils.isEmpty(userUpdateDto.getStatus()) ? this.status : userUpdateDto.getStatus();
-        this.chageUpdatedBy(userUpdateDto.getUpdatedBy());
+    public void chageStatus(Status status, Long updatedId) {
+        this.status = status;
+        this.chageUpdatedBy(updatedId);
     }
 }

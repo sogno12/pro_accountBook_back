@@ -8,9 +8,9 @@ import com.book.account.auth.model.consts.AuthConst.SecretType;
 import com.book.account.common.mapper.ResponseMapper;
 import com.book.account.common.model.dto.ApiBaseResult;
 import com.book.account.config.JwtTokenProvider;
-import com.book.account.module.model.Module;
 import com.book.account.module.model.ModuleTree;
 import com.book.account.module.model.dto.ModuleCreateDto;
+import com.book.account.module.model.dto.ModuleDto;
 import com.book.account.module.model.dto.ModuleUpdateDto;
 import com.book.account.module.service.ModuleService;
 
@@ -41,8 +41,8 @@ public class ModuleController {
     }
     
     @GetMapping("/{moduleId}")
-    public ApiBaseResult<Module> getModule(@PathVariable("moduleId") String moduleId) {
-        Module module = moduleService.getModule(moduleId);
+    public ApiBaseResult<ModuleDto> getModule(@PathVariable("moduleId") String moduleId) {
+        ModuleDto module = moduleService.getModule(moduleId);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, module);
     }
 

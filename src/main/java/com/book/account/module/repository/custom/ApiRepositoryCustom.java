@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface ApiRepositoryCustom {
     Page<ApiDto> getApis(ApiDto apiDto, Pageable pageable);
+
+    ApiDto getApi(String apiId);
 }
