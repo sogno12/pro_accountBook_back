@@ -53,7 +53,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public UserDto getUserDetails(Long userId) {
+    public UserDto getUser(Long userId) {
         UserDto userDto = queryFactory
                 .select((Projections.fields(UserDto.class, user.userId, user.userName, user.email, userAuth.loginId,
                         userAuth.status)))

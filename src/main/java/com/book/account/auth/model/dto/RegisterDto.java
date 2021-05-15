@@ -18,10 +18,17 @@ public class RegisterDto {
 
 
 	public User toUserEntity() {
-        return User.builder().userName(this.userName).email(this.email).build();
+        return User.builder()
+                    .userName(this.userName)
+                    .email(this.email)
+                    .build();
 	}
 	public UserAuth toUserAuthEntity() {
-		return UserAuth.builder().loginId(this.loginId).loginPwd(this.loginPwd).status(Status.ACTIVE).build();
+		return UserAuth.builder()
+                        .loginId(this.loginId)
+                        .loginPwd(this.loginPwd)
+                        .status(Status.ACTIVE)
+                        .build();
 	}
 
 }

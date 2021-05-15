@@ -11,11 +11,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@Getter @Setter
+@Getter
 public class BaseCreatedEntity {
 
     @CreatedBy
@@ -26,4 +25,7 @@ public class BaseCreatedEntity {
     @Column(updatable = false)
     private LocalDateTime createdAt;
     
+    public void createdBy(Long userId) {
+        this.createdBy = userId;
+    }
 }

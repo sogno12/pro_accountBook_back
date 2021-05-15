@@ -7,7 +7,6 @@ import javax.persistence.Table;
 import com.book.account.common.model.BaseEntity;
 import com.book.account.module.model.dto.ModuleUpdateDto;
 
-import org.springframework.util.NumberUtils;
 import org.springframework.util.StringUtils;
 
 import lombok.AllArgsConstructor;
@@ -26,11 +25,11 @@ public class Module extends BaseEntity {
     @Id
     private String moduleId;
     private String moduleName;
-    private Integer sortNo;
+    private int sortNo;
     
-    public void toUpdate(ModuleUpdateDto moduleUpdateDto) {
-        this.moduleName = StringUtils.isEmpty(moduleUpdateDto.getModuleName()) ? this.moduleName : moduleUpdateDto.getModuleName();
-        this.sortNo = StringUtils.isEmpty(moduleUpdateDto.getSortNo()) ? this.sortNo : moduleUpdateDto.getSortNo();
-        this.setUpdatedBy(moduleUpdateDto.getUpdatedBy());
-    }   
+   public void toUpdate(Module module) {
+       this.moduleName = module.getModuleName();
+       this.sortNo = module.getSortNo();
+       this.chageUpdatedBy(module.getUpdatedBy());
+   } 
 }

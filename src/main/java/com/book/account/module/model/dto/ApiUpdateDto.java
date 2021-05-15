@@ -1,5 +1,6 @@
 package com.book.account.module.model.dto;
 
+import com.book.account.module.model.Api;
 import com.book.account.module.model.consts.ApiConst.AccessScope;
 import com.book.account.module.model.consts.ApiConst.HttpType;
 
@@ -14,4 +15,16 @@ public class ApiUpdateDto {
     private AccessScope accessScope;
 
     private Long updatedBy;
+
+    public Api getUpdatedEntity() {
+        Api api = Api.builder()
+                    .apiId(this.apiId)
+                    .httpType(this.httpType)
+                    .url(this.url)
+                    .description(this.description)
+                    .accessScope(this.accessScope)
+                    .build();
+        api.chageUpdatedBy(this.updatedBy);
+        return api;
+    }
 }

@@ -2,8 +2,8 @@ package com.book.account.menu.service;
 
 import java.util.List;
 
-import com.book.account.menu.model.Menu;
 import com.book.account.menu.model.dto.MenuCreateDto;
+import com.book.account.menu.model.dto.MenuDto;
 import com.book.account.menu.model.dto.MenuUpdateDto;
 
 public interface MenuService {
@@ -11,14 +11,14 @@ public interface MenuService {
     /**
      * 모든 메뉴 조회
      */
-    List<Menu> getMenus();
+    List<MenuDto> getMenus();
 
     /**
-     * 
+     * 메뉴 상세 조회
      * @param menuId
      * @return
      */
-    Menu getMenu(String menuId);
+    MenuDto getMenu(String menuId);
 
     /**
      * 메뉴 생성

@@ -9,5 +9,5 @@ public interface UserRepositoryCustom {
 
     Page<UserDto> getUsers(UserDto userDto, Pageable pageable);
     
-    UserDto getUserDetails(Long userId);
+    UserDto getUser(Long userId);
 }

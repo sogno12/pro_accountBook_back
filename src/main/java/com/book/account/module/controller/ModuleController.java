@@ -5,12 +5,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.book.account.auth.model.consts.AuthConst.SecretType;
+import com.book.account.common.mapper.ResponseMapper;
 import com.book.account.common.model.dto.ApiBaseResult;
-import com.book.account.common.service.ResponseService;
 import com.book.account.config.JwtTokenProvider;
-import com.book.account.module.model.Module;
 import com.book.account.module.model.ModuleTree;
 import com.book.account.module.model.dto.ModuleCreateDto;
+import com.book.account.module.model.dto.ModuleDto;
 import com.book.account.module.model.dto.ModuleUpdateDto;
 import com.book.account.module.service.ModuleService;
 
@@ -32,28 +32,26 @@ import lombok.RequiredArgsConstructor;
 public class ModuleController {
     
     private final ModuleService moduleService;
-    private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/tree")
     public ApiBaseResult<List<ModuleTree>> getModuleTree() {
         List<ModuleTree> moduleTree = moduleService.getModuleTree();
-        return responseService.getApiBaseResult(HttpStatus.OK, moduleTree);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, moduleTree);
     }
     
     @GetMapping("/{moduleId}")
-    public ApiBaseResult<Module> getModule(@PathVariable("moduleId") String moduleId) {
-        Module module = moduleService.getModule(moduleId);
-        return responseService.getApiBaseResult(HttpStatus.OK, module);
+    public ApiBaseResult<ModuleDto> getModule(@PathVariable("moduleId") String moduleId) {
+        ModuleDto module = moduleService.getModule(moduleId);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, module);
     }
 
     @PostMapping
     public ApiBaseResult<String> createModule(HttpServletRequest request, @RequestBody ModuleCreateDto moduleCreateDto) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         moduleCreateDto.setCreatedBy(requestId);
-        moduleCreateDto.setUpdatedBy(requestId);
         moduleService.createModule(moduleCreateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @PutMapping("/{moduleId}")
@@ -61,12 +59,12 @@ public class ModuleController {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         moduleUpdateDto.setUpdatedBy(requestId);
         moduleService.updateRule(moduleUpdateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @DeleteMapping("/{moduleId}")
     public ApiBaseResult<String> deleteModule(@PathVariable("moduleId") String moduleId) {
         moduleService.deleteModule(moduleId);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 }

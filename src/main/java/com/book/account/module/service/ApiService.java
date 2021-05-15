@@ -14,7 +14,7 @@ public interface ApiService {
     Page<ApiDto> getApis(ApiDto apiDto, Pageable pageable);
 
     /** 단일 API 조회 */
-    Api getApi(String apiId);
+    ApiDto getApi(String apiId);
 
     /** API 생성 */
     void createApi(ApiCreateDto apiCreateDto);

@@ -7,7 +7,7 @@ public class MenuDto {
     private String menuId;
     private String menuName;
     private String upMenuId;
-    private Integer sortNo;
+    private int sortNo;
     private String menuPath;
     private String menuIcon;
     private String description;

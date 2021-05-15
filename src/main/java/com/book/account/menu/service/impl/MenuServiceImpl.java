@@ -6,14 +6,17 @@ import com.book.account.common.model.dto.ApiCommonException;
 import com.book.account.menu.model.Menu;
 import com.book.account.menu.model.consts.MenuConst;
 import com.book.account.menu.model.dto.MenuCreateDto;
+import com.book.account.menu.model.dto.MenuDto;
 import com.book.account.menu.model.dto.MenuUpdateDto;
 import com.book.account.menu.repository.MenuRepository;
 import com.book.account.menu.service.MenuService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuServiceImpl implements MenuService {
 
     @Autowired
@@ -21,53 +24,61 @@ public class MenuServiceImpl implements MenuService {
 
     /** 모든 메뉴 조회 */
     @Override
-    public List<Menu> getMenus() {
-        List<Menu> findMenus = menuRepository.findAll();
-        return findMenus;
+    public List<MenuDto> getMenus() {
+        List<MenuDto> menus = menuRepository.getMenus();
+        return menus;
     }
 
     /** 메뉴 상세 조회 */
     @Override
-    public Menu getMenu(String menuId) {
-        Menu findMenu = menuRepository.findById(menuId).orElseThrow(MenuConst.ResponseError.NOT_FOUND_MENU_ID::throwException);
+    public MenuDto getMenu(String menuId) {
+        MenuDto findMenu = menuRepository.getMenu(menuId);
+
+        return findMenu;
+    }
+
+    /** 단일 메뉴 조회 */
+    public Menu getMenuById(String menuId) {
+        Menu findMenu = menuRepository.findById(menuId)
+                .orElseThrow(MenuConst.ResponseError.NOT_FOUND_MENU_ID::throwException);
         return findMenu;
     }
 
     /** 메뉴 생성 */
     @Override
+    @Transactional
     public void createMenu(MenuCreateDto menuCreateDto) {
         // 1. 동일 메뉴ID 확인 -> 있으면 에러 반환
-        Boolean isMenu = menuRepository.findById(menuCreateDto.getMenuId()).isPresent();
+        boolean exist = menuRepository.existsById(menuCreateDto.getMenuId());
 
-        if(!isMenu) {
-            // 2_1. 동일 메뉴 ID 없으면 생성
+        if(exist) {
+            // 2_1. 있으면 에러 반환
+            throw new ApiCommonException(MenuConst.ResponseError.DUPLICATE_MENU_ID.throwException());
+        } else {
+            // 2_2. 동일 메뉴 ID 없으면 생성
             Menu menu = menuCreateDto.toMenuEntity();
             menuRepository.save(menu);
-        } else {
-            // 2_2. 있으면 에러 반환
-            throw new ApiCommonException(MenuConst.ResponseError.DUPLICATE_MENU_ID.throwException());
-
         }
     }
 
     /** 메뉴 수정 */
     @Override
+    @Transactional
     public void updateMenu(MenuUpdateDto menuUpdateDto) {
         // 1. 메뉴 조회
-        Menu findMenu = menuRepository.findById(menuUpdateDto.getMenuId()).orElseThrow(MenuConst.ResponseError.NOT_FOUND_MENU_ID::throwException);
+        Menu findMenu = getMenuById(menuUpdateDto.getMenuId());
         
         // 2. 메뉴 정보 업데이트
-        findMenu.toUpdateMenu(menuUpdateDto);
-        
-        // 3. 저장
-        menuRepository.save(findMenu);
+        Menu updatedMenu = menuUpdateDto.getUpdatedEntity();
+        findMenu.toUpdate(updatedMenu);
     }
 
     /** 메뉴 삭제 */
     @Override
+    @Transactional
     public void deleteMenu(String menuId) {
         // 1. 메뉴 조회 및 삭제
-        Menu findMenu = menuRepository.findById(menuId).orElseThrow(MenuConst.ResponseError.NOT_FOUND_MENU_ID::throwException);
+        Menu findMenu = getMenuById(menuId);
         menuRepository.delete(findMenu);
     }
 

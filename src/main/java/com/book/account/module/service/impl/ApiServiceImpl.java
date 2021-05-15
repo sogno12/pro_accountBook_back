@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ApiServiceImpl implements ApiService {
 
     @Autowired
@@ -26,33 +28,41 @@ public class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    public Api getApi(String apiId) {
+    public ApiDto getApi(String apiId) {
+        ApiDto apiDto = apiRepository.getApi(apiId);
+        return apiDto;
+    }
+
+    public Api getApiById(String apiId) {
         Api api = apiRepository.findById(apiId).orElseThrow(ApiConst.ResponseError.NOT_FOUND_API_ID::throwException);
         return api;
     }
 
     @Override
+    @Transactional
     public void createApi(ApiCreateDto apiCreateDto) {
         Api api = apiCreateDto.toApiEntity();
-        api.setCreatedBy(apiCreateDto.getCreatedBy());
-        api.setUpdatedBy(apiCreateDto.getUpdatedBy());
+        api.createdByUser(apiCreateDto.getCreatedBy());
         apiRepository.save(api);
     }
 
     @Override
+    @Transactional
     public void updateApi(ApiUpdateDto apiUpdateDto) {
-        // 1. API ENTITY
-        Api api = apiRepository.findById(apiUpdateDto.getApiId())
-        .orElseThrow(ApiConst.ResponseError.NOT_FOUND_API_ID::throwException);
-        api.toUpdateEntity(apiUpdateDto);
-        // 2. 저장
-        apiRepository.save(api);
+        // 1. 기존 API ENTITY 찾기
+        Api api = getApiById(apiUpdateDto.getApiId());
+        
+        // 2. 내용이 변경된 ENTITY 생성
+        Api updatedApi = apiUpdateDto.getUpdatedEntity();
+        
+        // 3. UPDATE
+        api.toUpdate(updatedApi);
     }
-
+    
     @Override
+    @Transactional
     public void deleteApi(String apiId) {
-        Api api = apiRepository.findById(apiId)
-                .orElseThrow(ApiConst.ResponseError.NOT_FOUND_API_ID::throwException);
+        Api api = getApiById(apiId);
         apiRepository.delete(api);
     }
 

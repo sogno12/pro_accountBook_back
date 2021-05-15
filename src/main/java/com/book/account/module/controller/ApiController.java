@@ -3,8 +3,8 @@ package com.book.account.module.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import com.book.account.auth.model.consts.AuthConst.SecretType;
+import com.book.account.common.mapper.ResponseMapper;
 import com.book.account.common.model.dto.ApiBaseResult;
-import com.book.account.common.service.ResponseService;
 import com.book.account.config.JwtTokenProvider;
 import com.book.account.module.model.Api;
 import com.book.account.module.model.dto.ApiCreateDto;
@@ -32,28 +32,26 @@ import lombok.RequiredArgsConstructor;
 public class ApiController {
     
     private final ApiService apiService;
-    private final ResponseService responseService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping
     public ApiBaseResult<Page<ApiDto>> getApis(ApiDto apiDto, Pageable pageable) {
         Page<ApiDto> apis = apiService.getApis(apiDto, pageable);
-        return responseService.getApiBaseResult(HttpStatus.OK, apis);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, apis);
     }
 
     @GetMapping("/{apiId}")
-    public ApiBaseResult<Api> getApi(@PathVariable("apiId") String apiId) {
-        Api api = apiService.getApi(apiId);
-        return responseService.getApiBaseResult(HttpStatus.OK, api);
+    public ApiBaseResult<ApiDto> getApi(@PathVariable("apiId") String apiId) {
+        ApiDto api = apiService.getApi(apiId);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, api);
     }
 
     @PostMapping
     public ApiBaseResult<String> createApi(HttpServletRequest request, @RequestBody ApiCreateDto apiCreateDto) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         apiCreateDto.setCreatedBy(requestId);
-        apiCreateDto.setUpdatedBy(requestId);
         apiService.createApi(apiCreateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @PutMapping("/{apiId}")
@@ -62,12 +60,12 @@ public class ApiController {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         apiUpdateDto.setUpdatedBy(requestId);
         apiService.updateApi(apiUpdateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @DeleteMapping("/{apiId}")
     public ApiBaseResult<String> deleteApi(@PathVariable("apiId") String apiId) {
         apiService.deleteApi(apiId);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 }

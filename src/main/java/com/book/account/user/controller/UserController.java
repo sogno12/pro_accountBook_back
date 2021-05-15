@@ -3,8 +3,8 @@ package com.book.account.user.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import com.book.account.auth.model.consts.AuthConst.SecretType;
+import com.book.account.common.mapper.ResponseMapper;
 import com.book.account.common.model.dto.ApiBaseResult;
-import com.book.account.common.service.ResponseService;
 import com.book.account.config.JwtTokenProvider;
 import com.book.account.user.model.dto.UserCreateDto;
 import com.book.account.user.model.dto.UserDto;
@@ -30,7 +30,6 @@ import lombok.AllArgsConstructor;
 @RequestMapping(value = "/api/up/users")
 public class UserController {
 
-    private final ResponseService responseService;
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -38,22 +37,21 @@ public class UserController {
     public ApiBaseResult<Page<UserDto>> getUsers(UserDto userDto, Pageable pageable) {
         Page<UserDto> users = userService.getUsers(userDto, pageable);
 
-        return responseService.getApiBaseResult(HttpStatus.OK, users);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, users);
     }
 
     @GetMapping("/{userId}")
     public ApiBaseResult<UserDto> getUser(@PathVariable("userId") Long userId) {
         UserDto userDto = userService.getUser(userId);
-        return responseService.getApiBaseResult(HttpStatus.OK, userDto);
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, userDto);
     }
 
     @PostMapping
     public ApiBaseResult<String> createUser(HttpServletRequest request, @RequestBody UserCreateDto userCreateDto) {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         userCreateDto.setCreatedBy(requestId);
-        userCreateDto.setUpdatedBy(requestId);
         userService.createUser(userCreateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
 
     }
 
@@ -63,13 +61,13 @@ public class UserController {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         userUpdateDto.setUpdatedBy(requestId);
         userService.updateUser(userUpdateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @DeleteMapping("/{userId}")
     public ApiBaseResult<String> deleteUser(@PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 
     @PutMapping("/status")
@@ -78,6 +76,6 @@ public class UserController {
         Long requestId = jwtTokenProvider.getUserId(request, SecretType.ACCESS_TOKEN);
         userUpdateDto.setUpdatedBy(requestId);
         userService.updateUser(userUpdateDto);
-        return responseService.getApiBaseResult(HttpStatus.OK, "");
+        return ResponseMapper.getApiBaseResult(HttpStatus.OK, "");
     }
 }

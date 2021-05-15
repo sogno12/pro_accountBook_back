@@ -21,9 +21,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
@@ -60,7 +58,8 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증 모듈
         Claims claims = Jwts.claims().setSubject(loginId);   // 제목
         claims.put(CLAIMS_USER_ID, userId);                 // 담고싶은정보
         Date issuedAt = new Date();
-        return Jwts.builder().setClaims(claims)             // 데이터
+        return Jwts.builder()
+                .setClaims(claims)             // 데이터
                 .setIssuedAt(issuedAt)                      // 토큰 발행일자
                 .setExpiration(new Date(issuedAt.getTime() + getTokenValidMilisecondByType(secretType))) // 만료 일시
                 .signWith(SignatureAlgorithm.HS256, getSecretKeyByType(secretType)) // 암호화 알고리즘, secret값 세팅

@@ -51,6 +51,18 @@ public class ApiRepositoryImpl implements ApiRepositoryCustom {
 
     }
 
+    @Override
+    public ApiDto getApi(String apiId) {
+        JPAQuery<ApiDto> query = queryFactory
+                .select(Projections.fields(ApiDto.class, 
+                api.apiId, api.httpType,
+                api.description, api.url, api.accessScope))
+                .from(api)
+                .where(api.apiId.eq(apiId));
+        ApiDto apiDto = query.fetchOne();
+        return apiDto;
+    }
+
     private BooleanExpression apiDescripLike(String description) {
         return description != null ? api.description.lower().like("%" + description.toLowerCase() + "%") : null;
     }

@@ -9,18 +9,17 @@ import com.book.account.user.model.dto.UserDto;
 import com.book.account.user.model.dto.UserUpdateDto;
 import com.book.account.user.repository.UserRepository;
 import com.book.account.user.service.UserService;
-import com.book.account.util.CommonUtils;
+import com.book.account.util.EncUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -41,22 +40,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(Long userId) {
-        UserDto user = userRepository.getUserDetails(userId);
+        UserDto user = userRepository.getUser(userId);
         return user;
     }
 
     @Override
+    @Transactional
     public void updateUser(UserUpdateDto userUpdateDto) {
         // TODO. USER_ROLE
 
         // 2. USER Entity
-        User user = userRepository.findById(userUpdateDto.getUserId())
-                .orElseThrow(UserConst.ResponseError.NOT_FOUND_USER_ID::throwException);
+        User user = getUserById(userUpdateDto.getUserId());
+        
+        // 2. USER UPDATE
+               User updatedUser = userUpdateDto.getUpdatedEntity();
+
         user.toUpdateEntity(userUpdateDto);
 
         // 3. USER_AUTH Entity
         UserAuth userAuth = userAuthRepository.findByUserId(userUpdateDto.getUserId());
-        userAuth.toUpdateEntity(userUpdateDto);
+        userAuth.chageStatus(userUpdateDto.getStatus(), userUpdateDto.getUpdatedBy());
 
         // 4. 저장
         userRepository.save(user);
@@ -64,15 +67,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         // TODO. USER_ROLE
+
         // USER_AUTH
-        userAuthRepository.deleteByUser(new User(userId));
+        userAuthRepository.deleteByUser(getUserById(userId));
         // USER
         userRepository.deleteByUserId(userId);
     }
 
     @Override
+    @Transactional
     public void createUser(UserCreateDto userCreateDto) {
         // 1. LoginId 중복체크
         if (isExistLoginId(userCreateDto.getLoginId())) {
@@ -80,21 +86,15 @@ public class UserServiceImpl implements UserService {
         }
 
         // 2. 비밀번호 생성
-        userCreateDto.setLoginPwd(passwordEncoder.encode(CommonUtils.encBySha256(getPolicyPassword())));
+        userCreateDto.setLoginPwd(passwordEncoder.encode(EncUtils.encBySha256(getPolicyPassword())));
 
         // 3. Entity 변환
         User user = userCreateDto.toUserEntity();
         UserAuth userAuth = userCreateDto.toUserAuthEntity();
 
         // 4. 사용자 등록
-        user.setCreatedBy(userCreateDto.getCreatedBy());
-        ;
-        user.setUpdatedBy(userCreateDto.getUpdatedBy());
-        ;
-        userAuth.setCreatedBy(userCreateDto.getCreatedBy());
-        ;
-        userAuth.setUpdatedBy(userCreateDto.getUpdatedBy());
-        ;
+        user.createdByUser(userCreateDto.getCreatedBy());
+        userAuth.createdByUser(userCreateDto.getCreatedBy());
 
         user.setUserAuth(userAuth);
         userRepository.save(user);
@@ -107,6 +107,13 @@ public class UserServiceImpl implements UserService {
     private String getPolicyPassword() {
         // TODO 패스워드 정책
         return "1234";
+    }
+
+    /** UserId 로 USER 조회 */
+    public User getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserConst.ResponseError.NOT_FOUND_USER_ID::throwException);
+        return user;
     }
 
     /** 로그인 아이디 기존 존재유무 확인 */

@@ -1,5 +1,7 @@
 package com.book.account.user.model.dto;
 
+import com.book.account.auth.model.UserAuth;
+import com.book.account.user.model.User;
 import com.book.account.user.model.consts.UserConst.Status;
 
 import lombok.Data;
@@ -18,5 +20,12 @@ public class UserUpdateDto {
 
 
     private Long updatedBy;
+
+    public User getUpdatedEntity() {
+        return User.builder()
+                    .userName(this.userName)
+                    .email(this.email)
+                    .build();
+    }
     
 }

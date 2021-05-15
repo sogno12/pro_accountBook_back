@@ -26,12 +26,13 @@ public class Rule extends BaseEntity {
     private String ruleId;
     private String ruleName;
     private String moduleId;
-    private Integer sortNo;
+    private int sortNo;
 
-    public void toUpdate(RuleUpdateDto ruleUpdateDto) {
-        this.ruleName = StringUtils.isEmpty(ruleUpdateDto.getRuleName()) ? this.ruleName : ruleUpdateDto.getRuleName();
-        this.sortNo = StringUtils.isEmpty(ruleUpdateDto.getSortNo()) ? this.sortNo : ruleUpdateDto.getSortNo();
-        this.setUpdatedBy(ruleUpdateDto.getUpdatedBy());
+    public void toUpdate(Rule updatedRule) {
+        this.ruleName = updatedRule.getRuleId();
+        this.moduleId = updatedRule.getModuleId();
+        this.sortNo = updatedRule.getSortNo();
+        this.chageUpdatedBy(updatedRule.getUpdatedBy());
     }
     
 }

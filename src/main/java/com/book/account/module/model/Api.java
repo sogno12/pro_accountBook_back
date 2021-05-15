@@ -33,13 +33,12 @@ public class Api extends BaseEntity {
     private String description;
     @Enumerated(value = EnumType.STRING)
     private AccessScope accessScope;
-
-    public void toUpdateEntity(ApiUpdateDto apiUpdateDto) {
-        this.apiId = apiUpdateDto.getApiId();
-        this.httpType = apiUpdateDto.getHttpType();
-        this.url = apiUpdateDto.getUrl();
-        this.description = apiUpdateDto.getDescription();
-        this.accessScope = apiUpdateDto.getAccessScope();
-        this.setUpdatedBy(apiUpdateDto.getUpdatedBy());
+    
+    public void toUpdate(Api api) {
+        this.httpType = api.getHttpType();
+        this.url = api.getUrl();
+        this.description = api.getDescription();
+        this.accessScope = api.getAccessScope();
+        this.chageUpdatedBy(api.getUpdatedBy());
     }
 }
