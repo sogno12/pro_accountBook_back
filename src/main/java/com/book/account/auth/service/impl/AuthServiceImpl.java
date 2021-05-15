@@ -1,7 +1,5 @@
 package com.book.account.auth.service.impl;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.book.account.auth.model.UserAuth;
 import com.book.account.auth.model.UserToken;
 import com.book.account.auth.model.consts.AuthConst.SecretType;
@@ -16,16 +14,13 @@ import com.book.account.config.JwtTokenProvider;
 import com.book.account.user.model.User;
 import com.book.account.user.model.consts.UserConst;
 import com.book.account.user.repository.UserRepository;
-import com.book.account.util.CommonUtils;
+import com.book.account.util.EncUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -41,7 +36,6 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     UserTokenRepository userTokenRepository;
 
-
     @Value("${accountbook.jwt.tokenType}")
     private String tokenType;
 
@@ -55,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
     public Long registerUser(RegisterDto registerDto) {
 
         // 1. 비밀번호 암호화
-        registerDto.setLoginPwd(passwordEncoder.encode(CommonUtils.encBySha256(registerDto.getLoginPwd())));
+        registerDto.setLoginPwd(passwordEncoder.encode(EncUtils.encBySha256(registerDto.getLoginPwd())));
 
         // 2. 중복체크
         if (isExistLoginId(registerDto.getLoginId())) {
@@ -75,7 +69,6 @@ public class AuthServiceImpl implements AuthService {
 
         Long userId = user.getUserId();
 
-
         // TODO 5. 사용자 최초 가계부 생성
 
         return userId;
@@ -92,24 +85,21 @@ public class AuthServiceImpl implements AuthService {
      * 로그인
      */
     @Override
-    public AuthenticationBean login(LoginDto loginDto, HttpServletRequest request) {
+    public AuthenticationBean login(LoginDto loginDto, String ip) {
 
         // 1. 계정 정보 조회
         UserAuth loginUserAuth = checkPassword(loginDto.getLoginId(), loginDto.getLoginPwd());
-        
-        if (loginUserAuth != null) {
+
+        // 2. 계정 정보가 없으면 Exception 처리
+        if (loginUserAuth == null) {
+            throw new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException());
+        } else {
             User user = loginUserAuth.getUser();
 
-            // 4.TODO: IP 가져와서 AccessLog 기록하기
-            String ip = CommonUtils.getClientIp(request);
-            // AccessLog accessLog = new AccessLog(user, ip);
-            // insertAccessLog(accessLog);
+            // 4.TODO: IP로 AccessLog 기록하기
 
             // 5. Token 반환
             return getAuthenticationBean(loginUserAuth.getLoginId(), user, loginUserAuth, ip);
-
-        } else {
-            throw new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException());
         }
 
     }
@@ -117,14 +107,14 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 패스워드 일치 확인
      */
-    public UserAuth checkPassword(String loginId, String loginPwd){
-        
+    public UserAuth checkPassword(String loginId, String loginPwd) {
+
         // 1. ID로 계정찾기
-        UserAuth userAuth = userAuthRepository.findById(loginId)
-                    .orElseThrow(() -> new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException()));
+        UserAuth userAuth = userAuthRepository.findById(loginId).orElseThrow(
+                () -> new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException()));
 
         // 2. 패스워드 일치 확인
-        if(passwordEncoder.matches(loginPwd, userAuth.getLoginPwd())) {
+        if (passwordEncoder.matches(loginPwd, userAuth.getLoginPwd())) {
             // 2.1 맞으면 계정 정보 반환
             return userAuth;
         } else {
@@ -132,14 +122,15 @@ public class AuthServiceImpl implements AuthService {
             throw new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException());
         }
     }
-    
+
     /**
      * 토큰 생성/반환 및 UserToken 저장
      */
     public AuthenticationBean getAuthenticationBean(String loginId, User user, UserAuth userAuth, String ip) {
 
         // 1. 토큰 생성
-        String accessToken = jwtTokenProvider.createToken(SecretType.ACCESS_TOKEN, user.getUserId(), String.valueOf(loginId));
+        String accessToken = jwtTokenProvider.createToken(SecretType.ACCESS_TOKEN, user.getUserId(),
+                loginId);
 
         // 2. 토큰 반환 정보는 로그인API 반환 시와 동일한 구조로 반환.
         AuthenticationBean authenticationBean = new AuthenticationBean();
@@ -160,10 +151,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User loadUserByUserId(String userId) {
-        User user = userRepository.findById(Long.parseLong(userId))
-        .orElseThrow(() -> new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException()));
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(
+                () -> new ApiCommonException(UserConst.ResponseError.UNAUTHORIZED_NOT_FOUND_ID.throwException()));
         return user;
     }
-
 
 }

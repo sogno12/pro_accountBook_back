@@ -12,6 +12,7 @@ import com.book.account.common.model.dto.ApiBaseResult;
 import com.book.account.common.model.dto.ApiCommonException;
 import com.book.account.config.JwtTokenProvider;
 import com.book.account.user.model.consts.UserConst;
+import com.book.account.util.CommonUtils;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +35,9 @@ public class AuthController {
     @PostMapping(value = "/login")
     public ApiBaseResult<AuthenticationBean> login(HttpServletRequest request, @RequestBody LoginDto loginDto) {
 
-        // JWT 로그인 인증
-        AuthenticationBean authenticationBean = authService.login(loginDto, request);
+        // 1. IP 주소
+        String ip = CommonUtils.getClientIp(request);
+        AuthenticationBean authenticationBean = authService.login(loginDto, ip);
         return ResponseMapper.getApiBaseResult(HttpStatus.OK, authenticationBean);
     }
     

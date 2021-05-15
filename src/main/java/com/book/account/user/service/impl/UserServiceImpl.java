@@ -9,7 +9,7 @@ import com.book.account.user.model.dto.UserDto;
 import com.book.account.user.model.dto.UserUpdateDto;
 import com.book.account.user.repository.UserRepository;
 import com.book.account.user.service.UserService;
-import com.book.account.util.CommonUtils;
+import com.book.account.util.EncUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,9 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -80,7 +77,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 2. 비밀번호 생성
-        userCreateDto.setLoginPwd(passwordEncoder.encode(CommonUtils.encBySha256(getPolicyPassword())));
+        userCreateDto.setLoginPwd(passwordEncoder.encode(EncUtils.encBySha256(getPolicyPassword())));
 
         // 3. Entity 변환
         User user = userCreateDto.toUserEntity();
